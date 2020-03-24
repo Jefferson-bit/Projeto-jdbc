@@ -3,19 +3,19 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package projeto.jdbc;
+package projeto.db;
 
 /**
  *
  * @author crash
  */
-public class ProjetoJDBC {
+public class DBException extends RuntimeException {
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        // TODO code application logic here
+    private static final long serialVersioUID = 1L;
+    
+    public DBException(String msg) {
+        super(msg);
     }
+    
     
 }
