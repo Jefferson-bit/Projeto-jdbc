@@ -1,9 +1,11 @@
+package Dados;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package projeto.db;
+
 
 
 import java.io.FileInputStream;
@@ -14,14 +16,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
  * @author crash
  */
-public class DB {
+public class Conexao {
 
     private static Connection con = null;
 
