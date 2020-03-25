@@ -5,11 +5,13 @@
  */
 package model.Dao;
 
+import Dados.Conexao;
+
 
 public class DaoFactory {
     
     
     public static SellerDao createSellerDao(){
-        return new SellerDaoJDBC(); 
+        return new SellerDaoJDBC(Conexao.getConnection()); 
     }
 }
