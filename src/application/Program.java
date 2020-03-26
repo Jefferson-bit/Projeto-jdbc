@@ -25,14 +25,23 @@ public class Program {
         System.out.println(seller);
         
         
-        System.out.println("=== TESTE 2: seller findbyDeparmentID =====");
-        Department department = new Department(2, null);
-        
-        List<Seller> list = sellerDao.findByDeparment(department);
-        
+        System.out.println("\n=== TESTE 2: seller findbyDeparmentID =====");
+        Department department = new Department(2, null);    
+        List<Seller> list = sellerDao.findByDeparment(department);      
         list.forEach((obj) -> {
             System.out.println(obj);
         });
+        
+        
+        
+        System.out.println("\n=== TESTE 3: seller findAll =====");
+            
+        list = sellerDao.findAll();      
+        list.forEach((obj) -> {
+            System.out.println(obj);
+        });
+        
+        
     }
     
 }

@@ -1,4 +1,3 @@
-
 package model.Dao;
 
 import Dados.Conexao;
@@ -37,7 +36,7 @@ public class SellerDaoJDBC implements SellerDao {
     }
 
     @Override
-    public void deletById(Integer id) {
+    public void deleteById(Integer id) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -71,7 +70,37 @@ public class SellerDaoJDBC implements SellerDao {
 
     @Override
     public List<Seller> findAll() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        PreparedStatement st = null;
+        ResultSet rs = null;
+
+        try {
+            st = con.prepareStatement(
+                    "SELECT seller.*,department.name as DepName "
+                    + "FROM seller inner join department "
+                    + "on seller.DepartmentId = department.id "
+                    + "order by name");
+        
+            rs = st.executeQuery();
+          List<Seller> list = new ArrayList<>();
+            Map<Integer, Department> map = new HashMap<>();
+            while (rs.next()) {
+
+                Department dep = map.get(rs.getInt("DepartmentId"));
+                if (dep == null) {
+                    dep = instatiateDepartment(rs);
+                    map.put(rs.getInt("DepartmentId"), dep);
+                }
+
+                Seller obj = instatiateSeller(rs, dep);
+                list.add(obj);
+            }
+            return list;
+        } catch (SQLException ex) {
+            throw new DBException(ex.getMessage());
+        } finally {
+            Conexao.closeStatement(st);
+            Conexao.closeResultSet(rs);
+        }
     }
 
     private Department instatiateDepartment(ResultSet rs) throws SQLException {
@@ -94,29 +123,29 @@ public class SellerDaoJDBC implements SellerDao {
 
     @Override
     public List<Seller> findByDeparment(Department department) {
-          PreparedStatement st = null;
+        PreparedStatement st = null;
         ResultSet rs = null;
 
         try {
             st = con.prepareStatement(
                     "SELECT seller.*,department.name as DepName "
-                    +"FROM seller inner join department "
-                    +"on seller.DepartmentId = department.id "
-                    +"where DepartmentId = ? "
-                    +"order by Name");
+                    + "FROM seller inner join department "
+                    + "on seller.DepartmentId = department.id "
+                    + "where DepartmentId = ? "
+                    + "order by Name");
             st.setInt(1, department.getId());
             rs = st.executeQuery();
             List<Seller> list = new ArrayList<>();
             Map<Integer, Department> map = new HashMap<>();
-            
+
             while (rs.next()) {
-                
+
                 Department dep = map.get(rs.getInt("DepartmentId"));
-                if(dep == null){
+                if (dep == null) {
                     dep = instatiateDepartment(rs);
-                    map.put(rs.getInt("DepartmentId"),dep);
+                    map.put(rs.getInt("DepartmentId"), dep);
                 }
-                
+
                 Seller obj = instatiateSeller(rs, dep);
                 list.add(obj);
             }
@@ -127,7 +156,7 @@ public class SellerDaoJDBC implements SellerDao {
             Conexao.closeStatement(st);
             Conexao.closeResultSet(rs);
         }
-        
+
     }
 
 }
