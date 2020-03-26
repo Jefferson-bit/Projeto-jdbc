@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package model.Dao;
 
 import Dados.Conexao;
@@ -11,7 +7,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import model.entities.Department;
 import model.entities.Seller;
 
@@ -91,6 +90,44 @@ public class SellerDaoJDBC implements SellerDao {
         obj.setBaseSalary(rs.getDouble("BaseSalary"));
         obj.setDepartment(dep);
         return obj;
+    }
+
+    @Override
+    public List<Seller> findByDeparment(Department department) {
+          PreparedStatement st = null;
+        ResultSet rs = null;
+
+        try {
+            st = con.prepareStatement(
+                    "SELECT seller.*,department.name as DepName "
+                    +"FROM seller inner join department "
+                    +"on seller.DepartmentId = department.id "
+                    +"where DepartmentId = ? "
+                    +"order by Name");
+            st.setInt(1, department.getId());
+            rs = st.executeQuery();
+            List<Seller> list = new ArrayList<>();
+            Map<Integer, Department> map = new HashMap<>();
+            
+            while (rs.next()) {
+                
+                Department dep = map.get(rs.getInt("DepartmentId"));
+                if(dep == null){
+                    dep = instatiateDepartment(rs);
+                    map.put(rs.getInt("DepartmentId"),dep);
+                }
+                
+                Seller obj = instatiateSeller(rs, dep);
+                list.add(obj);
+            }
+            return list;
+        } catch (SQLException ex) {
+            throw new DBException(ex.getMessage());
+        } finally {
+            Conexao.closeStatement(st);
+            Conexao.closeResultSet(rs);
+        }
+        
     }
 
 }
